@@ -1,0 +1,7 @@
+CREATE PROCEDURE spDeleteAd
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    DELETE FROM [Ads]
+    WHERE [Id] = @Id
+END

@@ -1,0 +1,7 @@
+CREATE PROCEDURE spDeleteGame
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    DELETE FROM [Games]
+    WHERE [Id] = @Id
+END
