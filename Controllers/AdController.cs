@@ -67,13 +67,20 @@ namespace geraduo.Controllers {
         }
 
         [HttpDelete("v1/ad/{id}")]
-        public string DeleteAd(Guid id) {
-            // exclui o ad do banco de dados usando a stored procedure
-            _context.Connection.Execute("spDeleteAd", new {
-                Id = id
-            }, commandType: System.Data.CommandType.StoredProcedure);
+        public object DeleteAd(Guid id) {
+            try {
+                // exclui o ad do banco de dados usando a stored procedure
+                _context.Connection.Execute("spDeleteAd", new {
+                    Id = id
+                }, commandType: System.Data.CommandType.StoredProcedure);
 
-            return "Ad deleted successfully!";
+                return "Ad deleted successfully!";
+            } catch (IOException ex){
+                return BadRequest($"Error: {ex.Message}");
+
+            }
+
         }
+
     }
 }

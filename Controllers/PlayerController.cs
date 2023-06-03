@@ -72,13 +72,19 @@ namespace geraduo.Controllers {
         }
         //deletar
         [HttpDelete("v1/player/{id}")]
-        public string DeletePlayer(Guid id) {
-            // exclui o jogo do banco de dados usando a stored procedure
-            _context.Connection.Execute("spDeletePlayer", new {
-                Id = id
-            }, commandType: System.Data.CommandType.StoredProcedure);
+        public object DeletePlayer(Guid id) {
+            try {
+                // exclui o jogo do banco de dados usando a stored procedure
+                _context.Connection.Execute("spDeletePlayer", new {
+                    Id = id
+                }, commandType: System.Data.CommandType.StoredProcedure);
 
-            return "Player deleted successfully!";
+                return "Player deleted successfully!";
+            } catch {
+                return BadRequest("There is an Ad using this Player! ");
+
+            }
+
         }
 
         //email será checado através de uma procedure
