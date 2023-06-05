@@ -18,7 +18,7 @@ app.UseRouting();//usar rotas
 
 //usando o cors para poder liberar acesso ao front-end
 app.UseCors(builder =>
-    builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
+    builder.WithOrigins("http://localhost:3000")
            .AllowAnyHeader()
            .AllowAnyMethod()
 );

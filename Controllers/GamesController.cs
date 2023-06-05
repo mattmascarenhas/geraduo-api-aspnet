@@ -15,7 +15,7 @@ namespace geraduo.Controllers {
         public IEnumerable<GameQueryResult> GetAllGames() {
             return _context
                     .Connection
-                    .Query<GameQueryResult>("SELECT [Id], [Title], [BannerUrl] FROM [Games]");
+                    .Query<GameQueryResult>("SELECT [Id], [Title], [BannerUrl] FROM [Games]", new { });
         }
         //listar um
         [HttpGet("v1/games/{id}")]
@@ -44,18 +44,22 @@ namespace geraduo.Controllers {
         }
         //editar
         [HttpPut("v1/game/{id}")]
-        public string PutGame(Guid id, [FromBody] Game game) {
-            // atualiza o game de acordo com o que vem no body
-            var updatedGame = new Game(game.Title, game.BannerUrl);
+        public object PutGame(Guid id, [FromBody] Game game) {
+            try {
+                // atualiza o game de acordo com o que vem no body
+                var updatedGame = new Game(game.Title, game.BannerUrl);
 
-            // atualiza o jogo no banco de dados usando a stored procedure
-            _context.Connection.Execute("spUpdateGame", new {
-                Id = id,
-                Title = updatedGame.Title,
-                BannerUrl = updatedGame.BannerUrl
-            }, commandType: System.Data.CommandType.StoredProcedure);
+                // atualiza o jogo no banco de dados usando a stored procedure
+                _context.Connection.Execute("spUpdateGame", new {
+                    Id = id,
+                    Title = updatedGame.Title,
+                    BannerUrl = updatedGame.BannerUrl
+                }, commandType: System.Data.CommandType.StoredProcedure);
 
-            return "Game updated successfully!";
+                return "Game updated successfully!";
+            } catch (IOException ex) {
+                return BadRequest($"Error: {ex.Message}");
+            }
 
         }
         //deletar
@@ -72,6 +76,5 @@ namespace geraduo.Controllers {
                 return BadRequest("There is an Ad using this Game! ");
             }
         }
-
     }
 }
