@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using geraduo.Authenticate;
 using geraduo.Entities;
 using geraduo.QueriesResult;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace geraduo.Controllers {
                     }).FirstOrDefault();
         }
         //criar
-        [HttpPost("v1/player")]
+        [HttpPost("v1/players")]
         public object PostPlayer([FromBody] Player player) {
             //verifica se o email ja existe
             if (CheckEmail(player.Email))
@@ -52,9 +53,6 @@ namespace geraduo.Controllers {
         //editar
         [HttpPut("v1/player/{id}")]
         public object PutPlayer(Guid id, [FromBody] Player player) {
-            //verifica se o email ja existe
-            if (CheckEmail(player.Email))
-                return BadRequest("O Email já está cadastrado");
             // atualiza o player de acordo com o que vem no body
             var _updatedPlayer = new Player(player.Name, player.Nickname, player.Email, player.Password, player.Discord);
 
@@ -85,6 +83,52 @@ namespace geraduo.Controllers {
 
             }
 
+        }
+        //autenticar
+        [HttpPost("v1/authentication")]
+        public IActionResult Authenticate([FromBody] AuthenticationRequest request) {
+            // Verificar se o email e a senha são válidos
+            if (!IsValidCredentials(request.Email, request.Password))
+                return Unauthorized("Credenciais inválidas");
+
+            // Lógica para gerar token de autenticação
+            var token = GenerateToken(request.Email);
+
+            var player = _context.Connection.QueryFirstOrDefault<Player>("SELECT [Id], [Name], [Nickname], [Email], [Password], [Discord] FROM [Players] WHERE [Email] = @Email",
+        new {
+            Email = request.Email
+        });
+
+            // Retornar o token para o cliente
+            return Ok(new {
+                Id = player.Id,
+                Name = player.Name,
+                NickName = player.Nickname,
+                Email = request.Email,
+                Discord = player.Discord,
+                Token = token
+            });
+        }
+
+        private bool IsValidCredentials(string email, string password) {
+            var player = _context.Connection.QueryFirstOrDefault<Player>("SELECT [Id], [Name], [Nickname], [Email], [Password], [Discord] FROM [Players] WHERE [Email] = @Email",
+                new {
+                    Email = email
+                });
+
+            if (player == null)
+                return false;
+
+            // Lógica para comparar senhas
+            if (player.Password != password)
+                return false;
+
+            return true;
+        }
+
+        private string GenerateToken(string email) {
+            var token = email + System.DateTime.UtcNow.ToString();
+            return token;
         }
 
         //email será checado através de uma procedure

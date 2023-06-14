@@ -9,6 +9,8 @@ namespace geraduo.Entities {
             this.Password = password;
             this.Discord = discord;
         }
+        public Player() {
+        }
         public string Name { get; private set; }
         public string Nickname { get; private set; }
         public string Email { get; private set; }
