@@ -32,3 +32,11 @@ D:\CSharp\geraduo\obj\Debug\net7.0\refint\geraduo.dll
 D:\CSharp\geraduo\obj\Debug\net7.0\geraduo.pdb
 D:\CSharp\geraduo\obj\Debug\net7.0\geraduo.genruntimeconfig.cache
 D:\CSharp\geraduo\obj\Debug\net7.0\ref\geraduo.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+D:\CSharp\geraduo\bin\Debug\net7.0\System.Security.Permissions.dll

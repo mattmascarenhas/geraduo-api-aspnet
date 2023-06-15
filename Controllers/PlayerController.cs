@@ -3,6 +3,10 @@ using geraduo.Authenticate;
 using geraduo.Entities;
 using geraduo.QueriesResult;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace geraduo.Controllers {
     public class PlayerController: Controller {
@@ -91,14 +95,13 @@ namespace geraduo.Controllers {
             if (!IsValidCredentials(request.Email, request.Password))
                 return Unauthorized("Credenciais inválidas");
 
-            // Lógica para gerar token de autenticação
-            var token = GenerateToken(request.Email);
-
             var player = _context.Connection.QueryFirstOrDefault<Player>("SELECT [Id], [Name], [Nickname], [Email], [Password], [Discord] FROM [Players] WHERE [Email] = @Email",
         new {
             Email = request.Email
         });
 
+            // Lógica para gerar token de autenticação
+            var token = GenerateToken(player);
             // Retornar o token para o cliente
             return Ok(new {
                 Id = player.Id,
@@ -126,9 +129,24 @@ namespace geraduo.Controllers {
             return true;
         }
 
-        private string GenerateToken(string email) {
-            var token = email + System.DateTime.UtcNow.ToString();
-            return token;
+        private static string GenerateToken(Player user) {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor {
+                Subject = new System.Security.Claims.ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name)
+
+
+                }),
+                Expires = DateTime.UtcNow.AddHours(8),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature 
+                    )
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         //email será checado através de uma procedure
