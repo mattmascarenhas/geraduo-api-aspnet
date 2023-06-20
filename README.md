@@ -1,4 +1,4 @@
-# geraduo-api-aspnet
+# GeraDuo - API
 
 Nessa API, temos três entidades principais que são, PLAYER, GAME e AD.
 PLAYER representa o jogador que irá se cadastrar no sistema para buscar outro jogador compatível.
